@@ -1,10 +1,4 @@
-
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "species" })
 export class Species {
@@ -17,15 +11,15 @@ export class Species {
   @Column()
   category!: string;
 
-  @Column({ name: "min_age_weeks", type: "int", nullable: true })
-  min_age_weeks!: number | null;
+  @Column({ type: "int", default: 0 })
+  min_age_weeks!: number;
 
-  @Column({ name: "vaccination_required", type: "boolean", default: false })
+  @Column({ default: false })
   vaccination_required!: boolean;
 
-  @Column({ name: "is_allowed", type: "boolean", default: true })
+  @Column({ default: true })
   is_allowed!: boolean;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ type: "timestamp" })
   created_at!: Date;
 }
