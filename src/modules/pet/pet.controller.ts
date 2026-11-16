@@ -1,10 +1,3 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
-
- * PetController: public pet search and authenticated listing management.
- */
 import { Body, Controller, Get, Post, Patch, Delete, Param, Query, UseGuards, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { PetService } from "./pet.service";
@@ -44,7 +37,6 @@ export class PetController {
     },
   }))
   async createPet(@CurrentUser() user: AuthUser, @Body() dto: CreatePetDto, @UploadedFile() photo?: Express.Multer.File) {
-    // Team A must add ApprovedSellerGuard for SALE listings (handshake 1).
     return await this.petService.createPet(user.id, dto, photo);
   }
 

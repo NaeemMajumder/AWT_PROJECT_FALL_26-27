@@ -1,11 +1,3 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
-
- * Pet entity -> table: pets.
- * A pet belongs to one owner and one allowed species.
- */
 import {
   Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
   PrimaryGeneratedColumn, UpdateDateColumn,

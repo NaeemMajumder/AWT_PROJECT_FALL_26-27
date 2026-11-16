@@ -1,10 +1,3 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
-
- * PetService: pet listing, search, ownership and species-rule validation.
- */
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -95,8 +88,6 @@ export class PetService {
     pet.status = dto.status;
     return await this.petRepository.save(pet);
   }
-
-  // Team A publishes these events after a pet order is paid or expires.
   @OnEvent("order.paid")
   async handleOrderPaid(payload: { petId: string }) {
     const pet = await this.petRepository.findOne({ where: { id: payload.petId } });

@@ -1,11 +1,4 @@
 import { Transform } from "class-transformer";
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
-
- * DTOs for pet listings and admin listing review.
- */
 import { IsBoolean, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from "class-validator";
 import { Type } from "class-transformer";
 import { ListingType, PetGender, PetStatus } from "../../../common/enums/pet.enum";
