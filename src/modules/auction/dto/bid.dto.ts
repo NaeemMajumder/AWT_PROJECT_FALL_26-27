@@ -1,10 +1,8 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for auctions and bidding for high-value pets
- *
- *  - PlaceBidDto: amount
- *  - EditBidDto: amount
- * ==================================================================
- */
+import { IsNumber, Min } from "class-validator";
+import { Type } from "class-transformer";
+export class PlaceBidDto {
+  @Type(() => Number) @IsNumber() @Min(1) amount!: number;
+}
+export class EditBidDto {
+  @Type(() => Number) @IsNumber() @Min(1) amount!: number;
+}

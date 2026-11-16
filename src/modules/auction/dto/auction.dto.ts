@@ -1,11 +1,14 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for auctions and bidding for high-value pets
- *
- *  - CreateAuctionDto: pet_id, start_price (>= 50,000), duration_hours (<= 48)
- *  - ReviewAuctionDto: status, start_time
- *  - PriceDropDecisionDto: accept | withdraw
- * ==================================================================
- */
+import { IsDateString, IsIn, IsInt, IsNumber, IsOptional, IsUUID, Max, Min } from "class-validator";
+import { Type } from "class-transformer";
+export class CreateAuctionDto {
+  @IsUUID() pet_id!: string;
+  @Type(() => Number) @IsNumber() @Min(50000) start_price!: number;
+  @Type(() => Number) @IsInt() @Min(1) @Max(48) duration_hours!: number;
+}
+export class ReviewAuctionDto {
+  @IsIn(["approved", "rejected"]) decision!: "approved" | "rejected";
+  @IsOptional() @IsDateString() start_time?: string;
+}
+export class PriceDropDecisionDto {
+  @IsIn(["accept", "withdraw"]) decision!: "accept" | "withdraw";
+}

@@ -1,12 +1,17 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  AuctionModule: wires the auctions and bidding for high-value pets feature together
- *
- *  - imports: TypeOrmModule.forFeature([Auction, Bid, BidRevision])
- *  - controllers: [AuctionController]
- *  - providers: [AuctionService] + BidService
- *  - exports: [AuctionService] if the other team needs it (see handshakes)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Auction } from "./entities/auction.entity";
+import { Bid } from "./entities/bid.entity";
+import { BidRevision } from "./entities/bid-revision.entity";
+import { Pet } from "../pet/entities/pet.entity";
+import { AuctionController } from "./auction.controller";
+import { AuctionService } from "./auction.service";
+import { BidService } from "./bid.service";
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Auction, Bid, BidRevision, Pet])],
+  controllers: [AuctionController],
+  providers: [AuctionService, BidService],
+  exports: [AuctionService],
+})
+export class AuctionModule {}
