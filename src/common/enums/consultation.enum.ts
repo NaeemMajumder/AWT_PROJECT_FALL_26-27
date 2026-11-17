@@ -1,10 +1,5 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  Consultation enums
- *
- *  - ConsultationMode: ONLINE, CHAMBER
- *  - ConsultationStatus: PENDING, CONFIRMED, COMPLETED, CANCELLED
- * ==================================================================
- */
+export enum ConsultationMode { ONLINE = "online", CHAMBER = "chamber" }
+export enum ConsultationStatus {
+  PENDING = "pending", CONFIRMED = "confirmed",
+  COMPLETED = "completed", CANCELLED = "cancelled",
+}
