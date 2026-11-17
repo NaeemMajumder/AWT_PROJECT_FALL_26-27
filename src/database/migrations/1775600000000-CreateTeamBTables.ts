@@ -1,27 +1,13 @@
 
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-/**
- * ==================================================================
- * TEAM B MIGRATION
- * ==================================================================
- * Creates the tables owned by Team B:
- * species, pets, pet_requests, auctions, bids,
- * bid_revisions and consultations.
- *
- * Run only after Team A's users and vet_profiles tables exist.
- */
-
 export class CreateTeamBTables1775600000000
   implements MigrationInterface
 {
   name = "CreateTeamBTables1775600000000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // --------------------------------------------------------------
-    // 1. CREATE ENUM TYPES
-    // --------------------------------------------------------------
-
+    
     await queryRunner.query(`
       CREATE TYPE pets_listing_type_enum
       AS ENUM ('sale', 'adoption')
@@ -81,10 +67,6 @@ export class CreateTeamBTables1775600000000
       AS ENUM ('pending', 'confirmed', 'completed', 'cancelled')
     `);
 
-    // --------------------------------------------------------------
-    // 2. CREATE SPECIES TABLE
-    // --------------------------------------------------------------
-
     await queryRunner.query(`
       CREATE TABLE species (
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -97,10 +79,6 @@ export class CreateTeamBTables1775600000000
         updated_at timestamp NOT NULL DEFAULT now()
       )
     `);
-
-    // --------------------------------------------------------------
-    // 3. CREATE PETS TABLE
-    // --------------------------------------------------------------
 
     await queryRunner.query(`
       CREATE TABLE pets (
@@ -124,10 +102,6 @@ export class CreateTeamBTables1775600000000
       )
     `);
 
-    // --------------------------------------------------------------
-    // 4. CREATE PET REQUESTS TABLE
-    // --------------------------------------------------------------
-
     await queryRunner.query(`
       CREATE TABLE pet_requests (
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -140,10 +114,6 @@ export class CreateTeamBTables1775600000000
         created_at timestamp NOT NULL DEFAULT now()
       )
     `);
-
-    // --------------------------------------------------------------
-    // 5. CREATE AUCTIONS TABLE
-    // --------------------------------------------------------------
 
     await queryRunner.query(`
       CREATE TABLE auctions (
@@ -167,10 +137,6 @@ export class CreateTeamBTables1775600000000
       )
     `);
 
-    // --------------------------------------------------------------
-    // 6. CREATE BIDS TABLE
-    // --------------------------------------------------------------
-
     await queryRunner.query(`
       CREATE TABLE bids (
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -185,10 +151,6 @@ export class CreateTeamBTables1775600000000
       )
     `);
 
-    // --------------------------------------------------------------
-    // 7. CREATE BID REVISIONS TABLE
-    // --------------------------------------------------------------
-
     await queryRunner.query(`
       CREATE TABLE bid_revisions (
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -198,10 +160,6 @@ export class CreateTeamBTables1775600000000
         created_at timestamp NOT NULL DEFAULT now()
       )
     `);
-
-    // --------------------------------------------------------------
-    // 8. CREATE CONSULTATIONS TABLE
-    // --------------------------------------------------------------
 
     await queryRunner.query(`
       CREATE TABLE consultations (
@@ -220,10 +178,6 @@ export class CreateTeamBTables1775600000000
         created_at timestamp NOT NULL DEFAULT now()
       )
     `);
-
-    // --------------------------------------------------------------
-    // 9. CREATE INDEXES
-    // --------------------------------------------------------------
 
     await queryRunner.query(`
       CREATE INDEX idx_pets_search
@@ -247,10 +201,7 @@ export class CreateTeamBTables1775600000000
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // --------------------------------------------------------------
-    // DROP TABLES IN REVERSE ORDER
-    // --------------------------------------------------------------
-
+  
     await queryRunner.query(`DROP TABLE consultations`);
     await queryRunner.query(`DROP TABLE bid_revisions`);
     await queryRunner.query(`DROP TABLE bids`);
@@ -258,10 +209,6 @@ export class CreateTeamBTables1775600000000
     await queryRunner.query(`DROP TABLE pet_requests`);
     await queryRunner.query(`DROP TABLE pets`);
     await queryRunner.query(`DROP TABLE species`);
-
-    // --------------------------------------------------------------
-    // DROP ENUM TYPES
-    // --------------------------------------------------------------
 
     await queryRunner.query(`DROP TYPE consultations_status_enum`);
     await queryRunner.query(`DROP TYPE consultations_mode_enum`);
