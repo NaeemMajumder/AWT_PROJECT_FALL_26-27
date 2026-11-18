@@ -12,8 +12,6 @@ export class AppController {
 
   @Get('health')
   healthCheck() {
-    // The middleware in main.ts will automatically 
-    // attach the CSRF cookies to this response.
     return { status: 'ok', timestamp: new Date().toISOString() };
   }
 }

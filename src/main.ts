@@ -1,4 +1,5 @@
 import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "@/src/app.module";
@@ -10,8 +11,17 @@ import { join } from "path";
 
 dotenv.config();
 
+process.env.TZ = process.env.TZ || "Asia/Dhaka";
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   app.useStaticAssets(join(process.cwd(), "uploads"), {
     prefix: "/uploads/",
@@ -25,40 +35,34 @@ async function bootstrap() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          // Swagger UI needs 'unsafe-inline' to function correctly
           scriptSrc: ["'self'", "'unsafe-inline'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:", "validator.swagger.io"], // Allow Swagger images
+          imgSrc: ["'self'", "data:", "validator.swagger.io"],
           connectSrc: ["'self'"],
         },
       },
-      // This policy can block Swagger assets, so we disable it for now
       crossOriginEmbedderPolicy: false,
     }),
   );
 
-  // 1. Logger
   app.use((req: Request, res: Response, next: NextFunction) => {
     const now = new Date().toISOString().replace("T", " ").replace(/\..+/, "");
     console.log(`[HTTP] [${now}] ${req.method} ${req.originalUrl}`);
     next();
   });
 
-  // 2. Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle("KDex API")
+    .setTitle("Pet Bazaar API")
     .setVersion("1.0")
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  // 3. Cookie Parser
   const cookieSecret =
     process.env.COOKIE_SECRET || "fallback-secret-dont-use-in-prod";
   app.use(cookieParser(cookieSecret));
 
-  // 4. CORS Configuration
   const allowedOrigins = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
     : [];
