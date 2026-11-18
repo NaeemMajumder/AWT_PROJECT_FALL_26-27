@@ -1,86 +1,80 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import * as argon2 from "argon2";
 import { UserService } from "@/modules/user/user.service";
-import { AuthDto } from "./dto/auth.dto";
+import { AuthDto, RegisterDto } from "./dto/auth.dto";
 import { User } from "../user/entities/user.entity";
 import { appConfig } from "@/src/config";
 
 @Injectable()
 export class Authservice {
-constructor(
+  constructor(
     private userService: UserService,
     private jwt: JwtService,
-) {}
+  ) {}
 
-// signin method to generate a JWT token for a user
-
-async signIn(dto:AuthDto){
-   const user= await this.checkUserByEmail(dto.email);
-   if(!user){
-    throw new NotFoundException("User not found");
-   }
-   await this.validateUser(user,dto.password);
-   const {access_token,refresh_token,expires_in}
-   = await this.signTokens(user);
-   return {
-    access_token,
-    refresh_token,
-    expires_in};
-}
-
-async signTokens(user:User):Promise<{
-    access_token:string,
-    refresh_token:string,
-    expires_in:number
-    permission?:any}>{
-    const expires_in=Date.now()+1000*60*60*24*7; // 7 days
-    const accessPayload={
-        user_id:user.id,
-        name:user?.name,
-        email:user.email,
+  async register(dto: RegisterDto) {
+    try {
+      const user = await this.userService.createUser(dto.name, dto.email, dto.password, dto.phone);
+      return user;
+    } catch (error) {
+      throw error;
     }
-    const refreshPayload={
-        user_id:user.id,
+  }
 
-};
-const bearerSecret=appConfig.env.JWT_BEARER_SECRET;
-const refreshSecret=appConfig.env.JWT_REFRESH_SECRET;
+  async signIn(dto: AuthDto) {
+    try {
+      const user = await this.userService.findOneByEmail(dto.email);
+      if (!user) {
+        throw new UnauthorizedException("Invalid email or password");
+      }
+      const match = await argon2.verify(user.password, dto.password);
+      if (!match) {
+        throw new UnauthorizedException("Invalid email or password");
+      }
+      if (!user.is_active) {
+        throw new ForbiddenException("Your account is deactivated");
+      }
+      const tokens = await this.signTokens(user);
+      return {
+        ...tokens,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 
-
-const accesToken=await this.jwt.signAsync(accessPayload,{
-    expiresIn:"30d",
-    secret:bearerSecret,
-});
-
-const refreshToken=await this.jwt.signAsync(refreshPayload,{
-    expiresIn:"30d",
-    secret:refreshSecret,   });
-
-    return {
-        access_token:accesToken,
-        refresh_token:refreshToken,
-        expires_in:expires_in,
+  async signTokens(user: User) {
+    const expires_in = Date.now() + 1000 * 60 * 60 * 24 * 30;
+    const accessPayload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      roles: [user.role],
+    };
+    const refreshPayload = {
+      id: user.id,
     };
 
-}
+    const access_token = await this.jwt.signAsync(accessPayload, {
+      expiresIn: "30d",
+      secret: appConfig.env.JWT_BEARER_SECRET,
+    });
+    const refresh_token = await this.jwt.signAsync(refreshPayload, {
+      expiresIn: "30d",
+      secret: appConfig.env.JWT_REFRESH_SECRET,
+    });
 
-async checkUserByEmail(email:string){
-    try
-    {
-        const user=await this.userService.findOneByEmail(email);
-        return user;
-    }
-    catch(e:any){
-        throw new NotFoundException("User not found");
-    }
-}
-
-async validateUser(user:User,password:string){
-    const passwordMatch=user.password===password;
-    if(!passwordMatch){
-        throw new NotFoundException("Invalid password");
-    }
-    return true;
-}
-
+    return {
+      access_token: access_token,
+      refresh_token: refresh_token,
+      expires_in: expires_in,
+    };
+  }
 }
