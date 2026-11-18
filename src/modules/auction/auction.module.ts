@@ -7,9 +7,11 @@ import { Pet } from "../pet/entities/pet.entity";
 import { AuctionController } from "./auction.controller";
 import { AuctionService } from "./auction.service";
 import { BidService } from "./bid.service";
+import { OrderModule } from "../order/order.module";
+import { NotificationModule } from "../notification/notification.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Auction, Bid, BidRevision, Pet])],
+  imports: [TypeOrmModule.forFeature([Auction, Bid, BidRevision, Pet]), OrderModule, NotificationModule],
   controllers: [AuctionController],
   providers: [AuctionService, BidService],
   exports: [AuctionService],
