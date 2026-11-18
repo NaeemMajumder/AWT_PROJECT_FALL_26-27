@@ -1,10 +1,19 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for the shopping cart
- *
- *  - AddCartItemDto: product_id, quantity
- *  - UpdateCartItemDto: quantity
- * ==================================================================
- */
+import { Type } from "class-transformer";
+import { IsInt, IsUUID, Min } from "class-validator";
+
+export class AddCartItemDto {
+  @IsUUID()
+  product_id!: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  quantity!: number;
+}
+
+export class UpdateCartItemDto {
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  quantity!: number;
+}
