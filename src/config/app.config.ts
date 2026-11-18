@@ -29,7 +29,7 @@ export const envSchema = z
     MAILER_FROM: z.string(),
     BULB_REWARD_INTERVAL_SECOND: z.coerce.number().default(7 * 86400),
     BLOCK_QUERY_INTERVAL: z.coerce.number().default(10000),
-    LONG_BREAK_THRESHOLD_IN_SECONDS: z.coerce.number().default(18 * 60 * 60), // 18Hours
+    LONG_BREAK_THRESHOLD_IN_SECONDS: z.coerce.number().default(18 * 60 * 60),
     FRONTEND_URL: z.string().default("http://localhost:3000"),
     RTC_PORT_MIN: z.coerce.number().default(10000),
     RTC_PORT_MAX: z.coerce.number().default(10100),
