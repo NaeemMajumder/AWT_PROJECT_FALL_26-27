@@ -10,7 +10,6 @@ export const CurrentUser = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
     const req: IRequest = context.switchToHttp().getRequest();
 
-    // Debug logging
     console.log("[CurrentUser Decorator] Request headers:", {
       authorization: req.headers.authorization ? "Present" : "Missing",
       user: req.user ? "Present" : "Missing",
