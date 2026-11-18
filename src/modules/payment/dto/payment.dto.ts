@@ -1,9 +1,8 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for simulated payments
- *
- *  - PayOrderDto: method (cash_on_delivery/online_simulated)
- * ==================================================================
- */
+import { IsEnum, IsOptional } from "class-validator";
+import { PaymentMethod } from "@/common/enums/payment.enum";
+
+export class PayOrderDto {
+  @IsOptional()
+  @IsEnum(PaymentMethod)
+  method?: PaymentMethod;
+}
