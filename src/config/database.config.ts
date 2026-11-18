@@ -7,9 +7,6 @@ import { camelCase, snakeCase } from "typeorm/util/StringUtils";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-/**
- * Snake naming will be used in database operations
- */
 export class SnakeNamingStrategy
   extends DefaultNamingStrategy
   implements NamingStrategyInterface

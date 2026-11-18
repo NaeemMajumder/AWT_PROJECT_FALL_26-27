@@ -6,11 +6,6 @@ import {
   validateSync,
 } from "class-validator";
 
-/**
- * @decorator
- * @description A custom decorator to validate a validation-schema within a validation schema upload N levels
- * @param schema The validation Class
- */
 export function ValidateNested(
   schema: new () => any,
   validationOptions?: ValidationOptions,

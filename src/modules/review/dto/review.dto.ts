@@ -1,9 +1,22 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for verified ratings and reviews
- *
- *  - CreateReviewDto: order_id | consultation_id, rating (1-5), comment
- * ==================================================================
- */
+import { Type } from "class-transformer";
+import { IsInt, IsOptional, IsString, IsUUID, Max, Min } from "class-validator";
+
+export class CreateReviewDto {
+  @IsOptional()
+  @IsUUID()
+  order_id?: string;
+
+  @IsOptional()
+  @IsUUID()
+  consultation_id?: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  rating!: number;
+
+  @IsOptional()
+  @IsString()
+  comment?: string;
+}

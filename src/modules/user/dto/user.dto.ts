@@ -1,36 +1,22 @@
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, Matches, MinLength } from "class-validator";
 
-export class CreateUserDto {
+export class UpdateProfileDto {
+  @IsOptional()
+  @IsString()
   @IsNotEmpty()
-  name: string = "";
-
-  @IsNotEmpty()
-  email: string = "";
-
-  @IsNotEmpty()
-  password: string = "";
+  name?: string;
 
   @IsOptional()
-  created_at?: Date = new Date();
-
-  @IsOptional()
-  updated_at?: Date = new Date();
+  @Matches(/^01[3-9]\d{8}$/, { message: "phone must be a valid Bangladeshi number like 01712345678" })
+  phone?: string;
 }
 
-export class UpdateUserDto {
-  @IsOptional()
-  name: string = "";
+export class ChangePasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  old_password!: string;
 
-  @IsOptional()
-  email: string = "";
-
-  @IsOptional()
-  password: string = "";
-
-  @IsOptional()
-  created_at?: Date = new Date();
-
-  @IsOptional()
-  updated_at?: Date = new Date();
+  @IsString()
+  @MinLength(6)
+  new_password!: string;
 }
-

@@ -1,10 +1,8 @@
-import {
-  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
-} from "typeorm";
-import { User } from "../../user/entities/user.entity";
-import { Species } from "../../species/entities/species.entity";
-import { ConsultationMode, ConsultationStatus } from "../../../common/enums/consultation.enum";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { User } from "@/modules/user/entities/user.entity";
+import { Species } from "@/modules/species/entities/species.entity";
+import { VetProfile } from "@/modules/vet/entities/vet-profile.entity";
+import { ConsultationMode, ConsultationStatus } from "@/common/enums/consultation.enum";
 
 @Entity({ name: "consultations" })
 export class Consultation {
@@ -13,6 +11,10 @@ export class Consultation {
 
   @Column({ type: "uuid" })
   vet_id!: string;
+
+  @ManyToOne(() => VetProfile)
+  @JoinColumn({ name: "vet_id" })
+  vet!: VetProfile;
 
   @Column({ type: "uuid" })
   user_id!: string;
@@ -43,13 +45,13 @@ export class Consultation {
   @Column({ type: "time" })
   end_time!: string;
 
-  @Column({ type: "enum", enum: ConsultationMode, enumName: "consultation_mode_enum" })
+  @Column({ type: "enum", enum: ConsultationMode })
   mode!: ConsultationMode;
 
-  @Column({ nullable: true })
-  room_code?: string;
+  @Column({ type: "varchar", nullable: true })
+  room_code?: string | null;
 
-  @Column({ type: "enum", enum: ConsultationStatus, enumName: "consultation_status_enum", default: ConsultationStatus.PENDING })
+  @Column({ type: "enum", enum: ConsultationStatus, default: ConsultationStatus.PENDING })
   status!: ConsultationStatus;
 
   @CreateDateColumn({ type: "timestamp" })

@@ -1,12 +1,15 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  OrderModule: wires the product checkout and pet orders feature together
- *
- *  - imports: TypeOrmModule.forFeature([Order, OrderItem])
- *  - controllers: [OrderController]
- *  - providers: [OrderService]
- *  - exports: [OrderService] if the other team needs it (see handshakes)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Order } from "./entities/order.entity";
+import { OrderItem } from "./entities/order-item.entity";
+import { OrderController } from "./order.controller";
+import { OrderService } from "./order.service";
+import { NotificationModule } from "../notification/notification.module";
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Order, OrderItem]), NotificationModule],
+  controllers: [OrderController],
+  providers: [OrderService],
+  exports: [OrderService],
+})
+export class OrderModule {}

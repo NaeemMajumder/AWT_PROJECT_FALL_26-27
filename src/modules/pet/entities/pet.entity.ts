@@ -1,10 +1,7 @@
-import {
-  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
-} from "typeorm";
-import { User } from "../../user/entities/user.entity";
-import { Species } from "../../species/entities/species.entity";
-import { ListingType, PetGender, PetStatus } from "../../../common/enums/pet.enum";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { User } from "@/modules/user/entities/user.entity";
+import { Species } from "@/modules/species/entities/species.entity";
+import { ListingType, PetGender, PetStatus } from "@/common/enums/pet.enum";
 
 @Entity({ name: "pets" })
 export class Pet {
@@ -31,7 +28,7 @@ export class Pet {
   @Column()
   breed!: string;
 
-  @Column({ type: "enum", enum: PetGender, enumName: "pet_gender_enum", default: PetGender.UNKNOWN })
+  @Column({ type: "enum", enum: PetGender, default: PetGender.UNKNOWN })
   gender!: PetGender;
 
   @Column({ type: "date" })
@@ -40,7 +37,7 @@ export class Pet {
   @Column({ default: false })
   vaccinated!: boolean;
 
-  @Column({ type: "enum", enum: ListingType, enumName: "listing_type_enum" })
+  @Column({ type: "enum", enum: ListingType })
   listing_type!: ListingType;
 
   @Column({ default: false })
@@ -55,11 +52,11 @@ export class Pet {
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
   price!: number;
 
-  @Column({ type: "enum", enum: PetStatus, enumName: "pet_status_enum", default: PetStatus.PENDING_REVIEW })
+  @Column({ type: "enum", enum: PetStatus, default: PetStatus.PENDING_REVIEW })
   status!: PetStatus;
 
-  @Column({ nullable: true })
-  photo_path?: string;
+  @Column({ type: "varchar", nullable: true })
+  photo_path?: string | null;
 
   @CreateDateColumn({ type: "timestamp" })
   created_at!: Date;

@@ -1,12 +1,14 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  ProductModule: wires the the pet products catalogue feature together
- *
- *  - imports: TypeOrmModule.forFeature([Product])
- *  - controllers: [ProductController]
- *  - providers: [ProductService]
- *  - exports: [ProductService] if the other team needs it (see handshakes)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Product } from "./entities/product.entity";
+import { ProductController } from "./product.controller";
+import { ProductService } from "./product.service";
+import { StorageModule } from "@/providers/storage/local/storage.module";
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Product]), StorageModule],
+  controllers: [ProductController],
+  providers: [ProductService],
+  exports: [ProductService],
+})
+export class ProductModule {}

@@ -1,10 +1,10 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  CreatePetOrderInput: contract for OrderService.createPetOrder() (HANDSHAKE 3)
- *
- *  - buyerId, sellerId, petId, amount, source ('request' | 'auction'), sourceId, payBy (Date)
- *  - Returns: { orderId }
- * ==================================================================
- */
+import { OrderSource } from "@/common/enums/order.enum";
+
+export interface CreatePetOrderInput {
+  buyerId: string;
+  sellerId: string;
+  petId: string;
+  amount: number;
+  source: OrderSource;
+  sourceId: string;
+}

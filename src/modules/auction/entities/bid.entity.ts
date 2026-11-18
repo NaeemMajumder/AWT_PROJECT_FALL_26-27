@@ -1,9 +1,6 @@
-import {
-  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn, Unique,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Auction } from "./auction.entity";
-import { User } from "../../user/entities/user.entity";
+import { User } from "@/modules/user/entities/user.entity";
 
 @Entity({ name: "bids" })
 @Unique(["auction_id", "bidder_id"])

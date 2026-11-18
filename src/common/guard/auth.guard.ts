@@ -32,20 +32,6 @@ export class AuthGuard implements CanActivate {
       );
     }
 
-    // const authPayload = await this.authService.verifyAuthToken(token);
-
-    // if (!authPayload)
-    //   throw new UnauthorizedException(
-    //     "You are not authenticated, invalid or expired token",
-    //   );
-
-    // req.user = authPayload;
-
-    // if (!authPayload)
-    //   throw new UnauthorizedException(
-    //     "You are not authenticated, no logged in users",
-    //   );
-
     return true;
   }
 }
