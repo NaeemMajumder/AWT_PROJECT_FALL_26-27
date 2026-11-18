@@ -1,222 +1,574 @@
+import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
 
-import { MigrationInterface, QueryRunner } from "typeorm";
-
-export class CreateTeamBTables1775600000000
-  implements MigrationInterface
-{
-  name = "CreateTeamBTables1775600000000";
-
+export class CreateTeamBTables1775600000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    
-    await queryRunner.query(`
-      CREATE TYPE pets_listing_type_enum
-      AS ENUM ('sale', 'adoption')
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "species",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "name",
+            type: "varchar",
+            isUnique: true,
+          },
+          {
+            name: "category",
+            type: "varchar",
+          },
+          {
+            name: "min_age_weeks",
+            type: "int",
+            default: 0,
+          },
+          {
+            name: "vaccination_required",
+            type: "boolean",
+            default: false,
+          },
+          {
+            name: "is_allowed",
+            type: "boolean",
+            default: true,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE pets_gender_enum
-      AS ENUM ('male', 'female', 'unknown')
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "pets",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "owner_id",
+            type: "uuid",
+          },
+          {
+            name: "species_id",
+            type: "uuid",
+          },
+          {
+            name: "title",
+            type: "varchar",
+          },
+          {
+            name: "breed",
+            type: "varchar",
+          },
+          {
+            name: "gender",
+            type: "enum",
+            enum: ["male", "female", "unknown"],
+            default: "'unknown'",
+          },
+          {
+            name: "birth_date",
+            type: "date",
+          },
+          {
+            name: "vaccinated",
+            type: "boolean",
+            default: false,
+          },
+          {
+            name: "listing_type",
+            type: "enum",
+            enum: ["sale", "adoption"],
+          },
+          {
+            name: "is_rescue",
+            type: "boolean",
+            default: false,
+          },
+          {
+            name: "district",
+            type: "varchar",
+          },
+          {
+            name: "area",
+            type: "varchar",
+          },
+          {
+            name: "price",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+            default: 0,
+          },
+          {
+            name: "status",
+            type: "enum",
+            enum: ["pending_review", "available", "reserved", "in_auction", "sold", "adopted", "rejected", "withdrawn"],
+            default: "'pending_review'",
+          },
+          {
+            name: "photo_path",
+            type: "varchar",
+            isNullable: true,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["owner_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["species_id"],
+            referencedTableName: "species",
+            referencedColumnNames: ["id"],
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE pets_status_enum
-      AS ENUM (
-        'pending_review',
-        'available',
-        'reserved',
-        'in_auction',
-        'sold',
-        'adopted',
-        'rejected',
-        'withdrawn'
-      )
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "pet_requests",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "pet_id",
+            type: "uuid",
+          },
+          {
+            name: "requester_id",
+            type: "uuid",
+          },
+          {
+            name: "type",
+            type: "enum",
+            enum: ["purchase", "adoption"],
+          },
+          {
+            name: "message",
+            type: "text",
+          },
+          {
+            name: "status",
+            type: "enum",
+            enum: ["pending", "accepted", "rejected", "cancelled", "expired"],
+            default: "'pending'",
+          },
+          {
+            name: "decided_at",
+            type: "timestamp",
+            isNullable: true,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["pet_id"],
+            referencedTableName: "pets",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["requester_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE pet_requests_type_enum
-      AS ENUM ('purchase', 'adoption')
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "auctions",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "pet_id",
+            type: "uuid",
+          },
+          {
+            name: "seller_id",
+            type: "uuid",
+          },
+          {
+            name: "start_price",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+          },
+          {
+            name: "round_no",
+            type: "int",
+            default: 1,
+          },
+          {
+            name: "duration_hours",
+            type: "numeric",
+            precision: 6,
+            scale: 2,
+          },
+          {
+            name: "start_time",
+            type: "timestamp",
+            isNullable: true,
+          },
+          {
+            name: "end_time",
+            type: "timestamp",
+            isNullable: true,
+          },
+          {
+            name: "extension_count",
+            type: "int",
+            default: 0,
+          },
+          {
+            name: "highest_bid",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+            isNullable: true,
+          },
+          {
+            name: "highest_bidder_id",
+            type: "uuid",
+            isNullable: true,
+          },
+          {
+            name: "status",
+            type: "enum",
+            enum: ["requested", "scheduled", "live", "awaiting_seller", "ended", "unsold", "withdrawn", "rejected", "cancelled"],
+            default: "'requested'",
+          },
+          {
+            name: "offer_price",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+            isNullable: true,
+          },
+          {
+            name: "offer_expires_at",
+            type: "timestamp",
+            isNullable: true,
+          },
+          {
+            name: "winner_id",
+            type: "uuid",
+            isNullable: true,
+          },
+          {
+            name: "approved_by",
+            type: "uuid",
+            isNullable: true,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["pet_id"],
+            referencedTableName: "pets",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["seller_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["highest_bidder_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["winner_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE pet_requests_status_enum
-      AS ENUM ('pending', 'accepted', 'rejected', 'cancelled', 'expired')
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "bids",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "auction_id",
+            type: "uuid",
+          },
+          {
+            name: "bidder_id",
+            type: "uuid",
+          },
+          {
+            name: "amount",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+          },
+          {
+            name: "edit_count",
+            type: "int",
+            default: 0,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+        uniques: [
+          {
+            name: "UQ_bids_auction_bidder",
+            columnNames: ["auction_id", "bidder_id"],
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["auction_id"],
+            referencedTableName: "auctions",
+            referencedColumnNames: ["id"],
+            onDelete: "CASCADE",
+          },
+          {
+            columnNames: ["bidder_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE auctions_status_enum
-      AS ENUM (
-        'requested',
-        'scheduled',
-        'live',
-        'awaiting_seller',
-        'ended',
-        'unsold',
-        'withdrawn',
-        'rejected',
-        'cancelled'
-      )
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "bid_revisions",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "bid_id",
+            type: "uuid",
+          },
+          {
+            name: "old_amount",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+          },
+          {
+            name: "new_amount",
+            type: "numeric",
+            precision: 12,
+            scale: 2,
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["bid_id"],
+            referencedTableName: "bids",
+            referencedColumnNames: ["id"],
+            onDelete: "CASCADE",
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE consultations_mode_enum
-      AS ENUM ('online', 'chamber')
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: "consultations",
+        columns: [
+          {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "vet_id",
+            type: "uuid",
+          },
+          {
+            name: "user_id",
+            type: "uuid",
+          },
+          {
+            name: "species_id",
+            type: "uuid",
+          },
+          {
+            name: "pet_name",
+            type: "varchar",
+          },
+          {
+            name: "problem_note",
+            type: "text",
+          },
+          {
+            name: "date",
+            type: "date",
+          },
+          {
+            name: "start_time",
+            type: "time",
+          },
+          {
+            name: "end_time",
+            type: "time",
+          },
+          {
+            name: "mode",
+            type: "enum",
+            enum: ["online", "chamber"],
+          },
+          {
+            name: "room_code",
+            type: "varchar",
+            isNullable: true,
+          },
+          {
+            name: "status",
+            type: "enum",
+            enum: ["pending", "confirmed", "completed", "cancelled"],
+            default: "'pending'",
+          },
+          {
+            name: "created_at",
+            type: "timestamp",
+            default: "now()",
+          },
+          {
+            name: "updated_at",
+            type: "timestamp",
+            default: "now()",
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ["vet_id"],
+            referencedTableName: "vet_profiles",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["user_id"],
+            referencedTableName: "users",
+            referencedColumnNames: ["id"],
+          },
+          {
+            columnNames: ["species_id"],
+            referencedTableName: "species",
+            referencedColumnNames: ["id"],
+          },
+        ],
+      }),
+      true,
+    );
 
-    await queryRunner.query(`
-      CREATE TYPE consultations_status_enum
-      AS ENUM ('pending', 'confirmed', 'completed', 'cancelled')
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE species (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        name varchar UNIQUE NOT NULL,
-        category varchar NOT NULL,
-        min_age_weeks integer NOT NULL DEFAULT 0,
-        vaccination_required boolean NOT NULL DEFAULT false,
-        is_allowed boolean NOT NULL DEFAULT true,
-        created_at timestamp NOT NULL DEFAULT now(),
-        updated_at timestamp NOT NULL DEFAULT now()
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE pets (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        species_id uuid NOT NULL REFERENCES species(id),
-        owner_id uuid NOT NULL REFERENCES users(id),
-        title varchar NOT NULL,
-        breed varchar,
-        gender pets_gender_enum NOT NULL DEFAULT 'unknown',
-        birth_date date,
-        vaccinated boolean NOT NULL DEFAULT false,
-        listing_type pets_listing_type_enum NOT NULL,
-        is_rescue boolean NOT NULL DEFAULT false,
-        district varchar NOT NULL,
-        area varchar NOT NULL,
-        price numeric(12,2) NOT NULL DEFAULT 0,
-        photo_path varchar,
-        status pets_status_enum NOT NULL DEFAULT 'pending_review',
-        created_at timestamp NOT NULL DEFAULT now(),
-        updated_at timestamp NOT NULL DEFAULT now()
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE pet_requests (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        pet_id uuid NOT NULL REFERENCES pets(id),
-        requester_id uuid NOT NULL REFERENCES users(id),
-        type pet_requests_type_enum NOT NULL,
-        message text,
-        status pet_requests_status_enum NOT NULL DEFAULT 'pending',
-        decided_at timestamp,
-        created_at timestamp NOT NULL DEFAULT now()
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE auctions (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        pet_id uuid NOT NULL REFERENCES pets(id),
-        seller_id uuid NOT NULL REFERENCES users(id),
-        start_price numeric(12,2) NOT NULL,
-        round_no integer NOT NULL DEFAULT 1,
-        duration_hours integer NOT NULL,
-        start_time timestamp,
-        end_time timestamp,
-        extension_count integer NOT NULL DEFAULT 0,
-        highest_bid numeric(12,2) NOT NULL DEFAULT 0,
-        highest_bidder_id uuid REFERENCES users(id),
-        status auctions_status_enum NOT NULL DEFAULT 'requested',
-        offer_price numeric(12,2),
-        offer_expires_at timestamp,
-        winner_id uuid REFERENCES users(id),
-        approved_by uuid REFERENCES users(id),
-        created_at timestamp NOT NULL DEFAULT now()
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE bids (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        auction_id uuid NOT NULL REFERENCES auctions(id),
-        bidder_id uuid NOT NULL REFERENCES users(id),
-        amount numeric(12,2) NOT NULL,
-        edit_count integer NOT NULL DEFAULT 0,
-        created_at timestamp NOT NULL DEFAULT now(),
-        updated_at timestamp NOT NULL DEFAULT now(),
-        CONSTRAINT uq_bids_auction_bidder
-        UNIQUE (auction_id, bidder_id)
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE bid_revisions (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        bid_id uuid NOT NULL REFERENCES bids(id),
-        old_amount numeric(12,2) NOT NULL,
-        new_amount numeric(12,2) NOT NULL,
-        created_at timestamp NOT NULL DEFAULT now()
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE TABLE consultations (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        vet_id uuid NOT NULL REFERENCES vet_profiles(id),
-        user_id uuid NOT NULL REFERENCES users(id),
-        species_id uuid NOT NULL REFERENCES species(id),
-        pet_name varchar NOT NULL,
-        problem_note text,
-        date date NOT NULL,
-        start_time time NOT NULL,
-        end_time time NOT NULL,
-        mode consultations_mode_enum NOT NULL,
-        room_code varchar,
-        status consultations_status_enum NOT NULL DEFAULT 'pending',
-        created_at timestamp NOT NULL DEFAULT now()
-      )
-    `);
-
-    await queryRunner.query(`
-      CREATE INDEX idx_pets_search
-      ON pets (district, listing_type, status)
-    `);
-
-    await queryRunner.query(`
-      CREATE INDEX idx_pet_requests_pet_status
-      ON pet_requests (pet_id, status)
-    `);
-
-    await queryRunner.query(`
-      CREATE INDEX idx_auctions_status_end
-      ON auctions (status, end_time)
-    `);
-
-    await queryRunner.query(`
-      CREATE INDEX idx_consultations_vet_date
-      ON consultations (vet_id, date)
-    `);
+    await queryRunner.createIndex(
+      "pet_requests",
+      new TableIndex({
+        name: "UQ_pet_requests_one_accepted",
+        columnNames: ["pet_id"],
+        isUnique: true,
+        where: "status = 'accepted'",
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-  
-    await queryRunner.query(`DROP TABLE consultations`);
-    await queryRunner.query(`DROP TABLE bid_revisions`);
-    await queryRunner.query(`DROP TABLE bids`);
-    await queryRunner.query(`DROP TABLE auctions`);
-    await queryRunner.query(`DROP TABLE pet_requests`);
-    await queryRunner.query(`DROP TABLE pets`);
-    await queryRunner.query(`DROP TABLE species`);
-
-    await queryRunner.query(`DROP TYPE consultations_status_enum`);
-    await queryRunner.query(`DROP TYPE consultations_mode_enum`);
-    await queryRunner.query(`DROP TYPE auctions_status_enum`);
-    await queryRunner.query(`DROP TYPE pet_requests_status_enum`);
-    await queryRunner.query(`DROP TYPE pet_requests_type_enum`);
-    await queryRunner.query(`DROP TYPE pets_status_enum`);
-    await queryRunner.query(`DROP TYPE pets_gender_enum`);
-    await queryRunner.query(`DROP TYPE pets_listing_type_enum`);
+    await queryRunner.dropTable("consultations", true);
+    await queryRunner.dropTable("bid_revisions", true);
+    await queryRunner.dropTable("bids", true);
+    await queryRunner.dropTable("auctions", true);
+    await queryRunner.dropTable("pet_requests", true);
+    await queryRunner.dropTable("pets", true);
+    await queryRunner.dropTable("species", true);
   }
 }
