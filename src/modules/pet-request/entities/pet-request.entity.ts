@@ -1,11 +1,45 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  PetRequest entity  ->  table: pet_requests
- *
- *  - id (uuid PK), pet_id (FK), requester_id (FK users), type (purchase/adoption), message,
- *  - status (pending/accepted/rejected/cancelled/expired), decided_at, created_at
- *  - Partial unique index: only one ACCEPTED request per pet
- * ==================================================================
- */
+import {
+  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
+  PrimaryGeneratedColumn, UpdateDateColumn,
+} from "typeorm";
+import { Pet } from "../../pet/entities/pet.entity";
+import { User } from "../../user/entities/user.entity";
+import { RequestStatus, RequestType } from "../../../common/enums/pet-request.enum";
+
+@Entity({ name: "pet_requests" })
+export class PetRequest {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+
+  @Column({ type: "uuid" })
+  pet_id!: string;
+
+  @ManyToOne(() => Pet)
+  @JoinColumn({ name: "pet_id" })
+  pet!: Pet;
+
+  @Column({ type: "uuid" })
+  requester_id!: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "requester_id" })
+  requester!: User;
+
+  @Column({ type: "enum", enum: RequestType, enumName: "request_type_enum" })
+  type!: RequestType;
+
+  @Column({ type: "text" })
+  message!: string;
+
+  @Column({ type: "enum", enum: RequestStatus, enumName: "request_status_enum", default: RequestStatus.PENDING })
+  status!: RequestStatus;
+
+  @Column({ type: "timestamp", nullable: true })
+  decided_at?: Date;
+
+  @CreateDateColumn({ type: "timestamp" })
+  created_at!: Date;
+
+  @UpdateDateColumn({ type: "timestamp" })
+  updated_at!: Date;
+}

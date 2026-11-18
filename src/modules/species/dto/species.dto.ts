@@ -1,9 +1,18 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for allowed species rules
- *
- *  - CreateSpeciesDto: name, category, min_age_weeks, vaccination_required, is_allowed
- * ==================================================================
- */
+import { Transform } from "class-transformer";
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
+import { Type } from "class-transformer";
+
+export class CreateSpeciesDto {
+  @IsString() @IsNotEmpty() name!: string;
+  @IsString() @IsNotEmpty() category!: string;
+  @Type(() => Number) @IsInt() @Min(0) min_age_weeks!: number;
+  @Transform(({ value }) => value === true || value === "true") @IsBoolean() vaccination_required!: boolean;
+  @IsOptional() @Transform(({ value }) => value === true || value === "true") @IsBoolean() is_allowed?: boolean;
+}
+export class UpdateSpeciesDto {
+  @IsOptional() @IsString() @IsNotEmpty() name?: string;
+  @IsOptional() @IsString() @IsNotEmpty() category?: string;
+  @IsOptional() @Type(() => Number) @IsInt() @Min(0) min_age_weeks?: number;
+  @IsOptional() @Transform(({ value }) => value === true || value === "true") @IsBoolean() vaccination_required?: boolean;
+  @IsOptional() @Transform(({ value }) => value === true || value === "true") @IsBoolean() is_allowed?: boolean;
+}

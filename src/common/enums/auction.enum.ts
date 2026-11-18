@@ -1,9 +1,5 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  AuctionStatus enum
- *
- *  - REQUESTED, SCHEDULED, LIVE, AWAITING_SELLER, ENDED, UNSOLD, WITHDRAWN, REJECTED, CANCELLED
- * ==================================================================
- */
+export enum AuctionStatus {
+  REQUESTED = "requested", SCHEDULED = "scheduled", LIVE = "live",
+  AWAITING_SELLER = "awaiting_seller", ENDED = "ended", UNSOLD = "unsold",
+  WITHDRAWN = "withdrawn", REJECTED = "rejected", CANCELLED = "cancelled",
+}

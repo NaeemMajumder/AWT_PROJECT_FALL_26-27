@@ -1,9 +1,8 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  MeetingModule: demo video-call link provider
- *
- *  - exports MeetingService
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { MeetingService } from "./meeting.service";
+
+@Module({
+  providers: [MeetingService],
+  exports: [MeetingService],
+})
+export class MeetingModule {}

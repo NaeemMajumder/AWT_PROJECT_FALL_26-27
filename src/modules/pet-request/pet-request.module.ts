@@ -1,12 +1,14 @@
-/**
- * ==================================================================
- *  TEAM B  (Farzana Islam Upoma)
- * ==================================================================
- *  PetRequestModule: wires the purchase and adoption requests (seller/owner approval) feature together
- *
- *  - imports: TypeOrmModule.forFeature([PetRequest])
- *  - controllers: [PetRequestController]
- *  - providers: [PetRequestService]
- *  - exports: [PetRequestService] if the other team needs it (see handshakes)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { PetRequest } from "./entities/pet-request.entity";
+import { Pet } from "../pet/entities/pet.entity";
+import { PetRequestController } from "./pet-request.controller";
+import { PetRequestService } from "./pet-request.service";
+
+@Module({
+  imports: [TypeOrmModule.forFeature([PetRequest, Pet])],
+  controllers: [PetRequestController],
+  providers: [PetRequestService],
+  exports: [PetRequestService],
+})
+export class PetRequestModule {}
