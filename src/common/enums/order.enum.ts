@@ -1,11 +1,18 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  Order enums
- *
- *  - OrderType: PRODUCT, PET
- *  - OrderSource: CART, REQUEST, AUCTION
- *  - OrderStatus: PENDING, PAID, CANCELLED, EXPIRED
- * ==================================================================
- */
+export enum OrderType {
+  PRODUCT = "product",
+  PET = "pet",
+}
+
+export enum OrderSource {
+  CART = "cart",
+  REQUEST = "request",
+  AUCTION = "auction",
+}
+
+export enum OrderStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+  EXPIRED = "expired",
+}
