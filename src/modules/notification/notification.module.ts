@@ -1,12 +1,13 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  NotificationModule: wires the in-app notifications feature together
- *
- *  - imports: TypeOrmModule.forFeature([Notification])
- *  - controllers: [NotificationController]
- *  - providers: [NotificationService]
- *  - exports: [NotificationService] if the other team needs it (see handshakes)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Notification } from "./entities/notification.entity";
+import { NotificationController } from "./notification.controller";
+import { NotificationService } from "./notification.service";
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Notification])],
+  controllers: [NotificationController],
+  providers: [NotificationService],
+  exports: [NotificationService],
+})
+export class NotificationModule {}
