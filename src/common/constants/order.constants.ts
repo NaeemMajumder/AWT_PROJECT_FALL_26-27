@@ -1,9 +1,3 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  Order constants
- *
- *  - PET_ORDER_PAY_WINDOW_HOURS = 24 (shorter value allowed for demo via .env)
- * ==================================================================
- */
+export const PET_ORDER_PAY_WINDOW_HOURS = process.env.PET_ORDER_PAY_WINDOW_HOURS
+  ? Number(process.env.PET_ORDER_PAY_WINDOW_HOURS)
+  : 24;

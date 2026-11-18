@@ -1,9 +1,9 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  DTOs (request body validation with class-validator) for in-app notifications
- *
- *  - NotificationQueryDto: unread_only
- * ==================================================================
- */
+import { Transform } from "class-transformer";
+import { IsBoolean, IsOptional } from "class-validator";
+
+export class NotificationQueryDto {
+  @IsOptional()
+  @Transform(({ value }) => value === true || value === "true")
+  @IsBoolean()
+  unread_only?: boolean;
+}

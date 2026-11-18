@@ -1,17 +1,27 @@
-import { Body, Controller, Get, Post, Patch, Param, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, UseGuards } from "@nestjs/common";
 import { SpeciesService } from "./species.service";
 import { CreateSpeciesDto, UpdateSpeciesDto } from "./dto/species.dto";
-import { JwtGuard } from "../../common/guard/jwt.guard";
-import { RolesGuard } from "../../common/guard/roles.guard";
-import { Roles } from "../../common/decorators/roles.decorator";
-import { Role } from "../../common/enums/role.enum";
+import { JwtGuard } from "@/common/guard/jwt.guard";
+import { RolesGuard } from "@/common/guard/roles.guard";
+import { Roles } from "@/common/decorators/roles.decorator";
+import { Role } from "@/common/enums/role.enum";
 
 @Controller("species")
 export class SpeciesController {
   constructor(private readonly speciesService: SpeciesService) {}
 
   @Get()
-  async getSpecies() { return await this.speciesService.getAllowedSpecies(); }
+  async getSpecies() {
+    return await this.speciesService.getAllowedSpecies();
+  }
+
+  @Get("all")
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async getAllSpecies() {
+    return await this.speciesService.getAllSpecies();
+  }
+
   @Post()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -22,7 +32,7 @@ export class SpeciesController {
   @Patch(":id")
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  async updateSpecies(@Param("id") id: string, @Body() dto: UpdateSpeciesDto) {
+  async updateSpecies(@Param("id", ParseUUIDPipe) id: string, @Body() dto: UpdateSpeciesDto) {
     return await this.speciesService.updateSpecies(id, dto);
   }
 }

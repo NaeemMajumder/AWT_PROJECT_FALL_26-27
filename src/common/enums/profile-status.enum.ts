@@ -1,9 +1,10 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  ProfileStatus enum for seller_profiles and vet_profiles
- *
- *  - PENDING, APPROVED, REJECTED
- * ==================================================================
- */
+export enum ProfileStatus {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}
+
+export enum SellerType {
+  INDIVIDUAL = "individual",
+  SHOP = "shop",
+}
