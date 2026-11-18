@@ -1,38 +1,27 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from "@nestjs/common";
+import { Body, Controller, Get, Patch, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { CreateUserDto } from "./dto/user.dto";
+import { ChangePasswordDto, UpdateProfileDto } from "./dto/user.dto";
+import { JwtGuard } from "@/common/guard/jwt.guard";
+import { CurrentUser } from "@/common/decorators/current-user.decorator";
+import { AuthUser } from "@/common/interfaces/auth-user.interface";
 
-@Controller("users") // link r end point local host 5000/
+@Controller("users")
+@UseGuards(JwtGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  async getUsers() {
-    return await this.userService.getUsers();
+  @Get("me")
+  async getMe(@CurrentUser() user: AuthUser) {
+    return await this.userService.getUserById(user.id);
   }
 
-  
-  @Post()
-  async createUser(@Body() dto: CreateUserDto) {
-    return await this.userService.createUser(dto);
+  @Patch("me")
+  async updateMe(@CurrentUser() user: AuthUser, @Body() dto: UpdateProfileDto) {
+    return await this.userService.updateProfile(user.id, dto);
   }
 
-  @Patch(":id")
-  async updateUser(@Param("id") id: string, @Body() dto: CreateUserDto) {
-    return await this.userService.updateUser(id, dto);
-  }
-
-  @Delete(":id")
-  async deleteUser(@Param("id") id: string) {
-    return await this.userService.deleteUser(id);
+  @Patch("me/password")
+  async changePassword(@CurrentUser() user: AuthUser, @Body() dto: ChangePasswordDto) {
+    return await this.userService.changePassword(user.id, dto);
   }
 }
-
