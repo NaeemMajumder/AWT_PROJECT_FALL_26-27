@@ -1,4 +1,3 @@
-<!-- TEAM A + TEAM B (shared): folder map and ownership for Pet Bazaar backend. Follows the course blueprint; nothing from the blueprint was removed. -->
 # Pet Bazaar — Backend Structure
 
 NestJS + TypeORM + PostgreSQL. Backend and database only (frontend later).
@@ -6,7 +5,6 @@ NestJS + TypeORM + PostgreSQL. Backend and database only (frontend later).
 - **Team A — Naeem Majumder (23-54115-3):** setup, database connection, auth, users, sellers, vets, admin, products, cart, orders, payments, notifications, reviews, storage.
 - **Team B — Farzana Islam Upoma (23-55246-3):** species, pets, pet requests, auctions and bids, consultations, meeting link, auction jobs.
 
-Every new file starts with a header comment that says which team owns it and what code goes there.
 Files marked *(blueprint)* came from the course blueprint and are kept as they are.
 
 ```
@@ -21,7 +19,7 @@ src/
 │   │   └── upload.constants.ts         A
 │   ├── decorators/                 (blueprint) current-user, roles
 │   ├── enums/
-│   │   ├── role.enum.ts            (blueprint) Team A replaces roles with CUSTOMER, VET, ADMIN
+│   │   ├── role.enum.ts            (blueprint) roles: admin, customer, vet
 │   │   ├── profile-status / order / payment / notification-type .enum.ts   A
 │   │   └── pet / pet-request / auction / consultation .enum.ts            B
 │   ├── guard/
@@ -70,10 +68,10 @@ Each module folder follows the blueprint pattern: `dto/`, `entities/`, `<name>.c
 |---|-----------|------|
 | 1 | A → B | JWT guard, roles guard, ApprovedSellerGuard, ApprovedVetGuard, @CurrentUser |
 | 2 | A → B | `VetService.getApprovedVet(vetId)` |
-| 3 | B → A | `OrderService.createPetOrder(input)` |
+| 3 | B → A | `OrderService.createPetOrder(input, manager)` |
 | 4 | A → B | events `order.paid`, `order.expired` |
 | 5 | A → B | `NotificationService.notify(...)` |
-| 6 | B → A | `ConsultationService.isCompleted(id, userId)` |
+| 6 | B → A | `ConsultationService.getCompletedForReview(id, userId)` |
 | 7 | A → B | `StorageService.save(file)` |
 
 ## Working rules
@@ -82,3 +80,5 @@ Each module folder follows the blueprint pattern: `dto/`, `entities/`, `<name>.c
 - Migrations only for your own tables (see `src/database/migrations/MIGRATION_PLAN.md`).
 - Announce changes to shared files: `common/`, `app.module.ts`, `.env.example`.
 - Copy `.env.example` to `.env`; never commit `.env`.
+- Package manager is pnpm only.
+- `postman/` holds the Postman collection and environment used to test every API.

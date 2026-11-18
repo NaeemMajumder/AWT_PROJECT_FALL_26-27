@@ -1,133 +1,71 @@
-# Krown Dex Backend – Setup & Run Guide
+# Pet Bazaar Backend
 
-````bash
+NestJS + TypeORM + PostgreSQL backend for Pet Bazaar, a pet marketplace for Bangladesh.
 
-This guide will help you set up and run the NestJS backend project locally.
+- Team A: Naeem Majumder (23-54115-3)
+- Team B: Farzana Islam Upoma (23-55246-3)
 
-## 🚀 Prerequisites
-Before starting, ensure the following are installed:
-- Node.js v22 or later
-- PostgreSQL
-- Redis
-- npm, yarn, or pnpm (any package manager)
-- Docker (optional, for containerized setup)
+## Requirements
 
----
+- Node.js 22 or later
+- PostgreSQL 14 or later
+- pnpm
 
-## 📦 Install Dependencies
-Use any of the following commands:
+## Setup
 
 ```bash
 pnpm install
-# or
-yarn install
-# or
-npm install
-
-
-````
-
-# 🔧 Environment Variables
-
-Go to the project root directory
-Find the file .env.example
-Create a .env file in the same directory
-Copy all content from .env.example into .env
-Update values based on your local environment
-Example:
-
-```bash
 cp .env.example .env
 ```
 
-# 🗄️ Database Setup & Migrations
+Open `.env` and set `DB_USER`, `DB_PASSWORD` and `DB_DATABASE`. Then create the database (for example `pet_bazaar`) in pgAdmin or DBeaver.
 
-Create the database
-
-```bash
-create db krown_dex_db
-
-```
-
-Run migrations
+## Database
 
 ```bash
-pnpm run migration:run
-# or
-yarn migration:run
-# or
-npm run migration:run
-
+pnpm migration:run
+pnpm seeder:refresh:dev
 ```
 
-# ⚡ Redis Setup
+`seeder:refresh:dev` clears all tables and fills them with demo data again. Run it before every Postman test run.
 
-Option 1: Run Redis with Docker
-
-```bash
-docker run -d --name krown-redis -p 6379:6379 redis:7-alpine
-```
-
-Option 2: Native install- Start Redis manually, then ensure .env values match:
-
-```bash
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=
-
-```
-
-# ▶️ Running the Backend (Development)
-
-Start the NestJS app:
+## Run
 
 ```bash
 pnpm start:dev
-# or
-yarn start:dev
-# or
-npm run start:dev
-
 ```
 
-# 🏗️ Production Build
+The API runs on `http://localhost:5000` and Swagger is at `http://localhost:5000/api`.
 
-Create a production build:
+## Demo accounts
 
-```bash
-pnpm build
-# or
-yarn build
-# or
-npm run build
+All passwords are `123456`.
 
-```
+| Email | Role |
+|-------|------|
+| admin@petbazaar.com | admin |
+| rahim@gmail.com | customer |
+| karim@gmail.com | customer |
+| sabbir@gmail.com | approved seller (individual) |
+| nusrat@gmail.com | approved seller (shop) |
+| hasan.vet@gmail.com | approved vet, Dhaka |
+| mitu.vet@gmail.com | approved vet, Rangpur |
 
-Start the production server:
+## Postman
 
-```bash
-pnpm start:prod
-# or
-yarn start:prod
-# or
-npm run start:prod
+Import both files from the `postman/` folder:
 
-```
+- `Pet Bazaar API.postman_collection.json`
+- `Pet Bazaar Local.postman_environment.json`
 
-# 📁 Project Structure (Overview)
+Select the "Pet Bazaar Local" environment and run the collection from top to bottom. Login requests save the tokens and ids, so the later requests work without copying anything by hand.
 
-```bash
-/project-root
-  ├─ src/
-  │   ├─ modules/
-  │   ├─ common/
-  │   ├─ config/
-  │   ├─ main.ts
-  │   └─ app.module.ts
-  ├─ migrations/
-  ├─ test/
-  ├─ .env.example
-  ├─ package.json
-  └─ tsconfig.json
+For the upload requests (seller document, pet photo, product image) pick a file from `postman/files/` in the Body tab if Postman asks for it.
 
-```
+## Background jobs
+
+These run every minute:
+
+- start scheduled auctions and close finished ones
+- expire price drop offers that the seller did not answer
+- expire unpaid pet orders after the pay window (`PET_ORDER_PAY_WINDOW_HOURS`)
