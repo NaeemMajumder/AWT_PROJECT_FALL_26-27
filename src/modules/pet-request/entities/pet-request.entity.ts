@@ -1,10 +1,7 @@
-import {
-  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
-} from "typeorm";
-import { Pet } from "../../pet/entities/pet.entity";
-import { User } from "../../user/entities/user.entity";
-import { RequestStatus, RequestType } from "../../../common/enums/pet-request.enum";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Pet } from "@/modules/pet/entities/pet.entity";
+import { User } from "@/modules/user/entities/user.entity";
+import { RequestStatus, RequestType } from "@/common/enums/pet-request.enum";
 
 @Entity({ name: "pet_requests" })
 export class PetRequest {
@@ -25,17 +22,17 @@ export class PetRequest {
   @JoinColumn({ name: "requester_id" })
   requester!: User;
 
-  @Column({ type: "enum", enum: RequestType, enumName: "request_type_enum" })
+  @Column({ type: "enum", enum: RequestType })
   type!: RequestType;
 
   @Column({ type: "text" })
   message!: string;
 
-  @Column({ type: "enum", enum: RequestStatus, enumName: "request_status_enum", default: RequestStatus.PENDING })
+  @Column({ type: "enum", enum: RequestStatus, default: RequestStatus.PENDING })
   status!: RequestStatus;
 
   @Column({ type: "timestamp", nullable: true })
-  decided_at?: Date;
+  decided_at?: Date | null;
 
   @CreateDateColumn({ type: "timestamp" })
   created_at!: Date;
