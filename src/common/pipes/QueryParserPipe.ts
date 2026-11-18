@@ -17,7 +17,6 @@ export class QueryParserPipe implements PipeTransform {
   ) {}
   transform(value: any, metadata: ArgumentMetadata) {
     const { type } = metadata;
-    // Make sure to only run your logic on queries
     if (type === "query") return this.transformQuery(value);
     return value;
   }

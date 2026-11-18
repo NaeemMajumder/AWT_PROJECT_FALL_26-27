@@ -13,8 +13,8 @@ export const truncateTables = () => {
       try {
         const entities = ds.entityMetadatas;
         for (const entity of entities) {
-          const repository = ds.getRepository(entity.name); // Get repository
-          await repository.clear(); // Clear each entity table's content
+          const repository = ds.getRepository(entity.name);
+          await repository.clear();
         }
         console.log("All tables cleared");
       } catch (err) {
