@@ -1,12 +1,15 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  CartModule: wires the the shopping cart feature together
- *
- *  - imports: TypeOrmModule.forFeature([Cart, CartItem])
- *  - controllers: [CartController]
- *  - providers: [CartService]
- *  - exports: [CartService] if the other team needs it (see handshakes)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Cart } from "./entities/cart.entity";
+import { CartItem } from "./entities/cart-item.entity";
+import { CartController } from "./cart.controller";
+import { CartService } from "./cart.service";
+import { ProductModule } from "../product/product.module";
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Cart, CartItem]), ProductModule],
+  controllers: [CartController],
+  providers: [CartService],
+  exports: [CartService],
+})
+export class CartModule {}
