@@ -1,17 +1,13 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { ScheduleModule } from "@nestjs/schedule";
-import { Auction } from "../modules/auction/entities/auction.entity";
-import { Bid } from "../modules/auction/entities/bid.entity";
-import { Pet } from "../modules/pet/entities/pet.entity";
+import { AuctionModule } from "@/modules/auction/auction.module";
+import { OrderModule } from "@/modules/order/order.module";
 import { AuctionLifecycleJob } from "./auction-lifecycle.job";
 import { AuctionPriceDropJob } from "./auction-price-drop.job";
+import { OrderExpiryJob } from "./order-expiry.job";
 
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Auction, Bid, Pet]),
-  ],
-  providers: [AuctionLifecycleJob, AuctionPriceDropJob],
+  imports: [ScheduleModule.forRoot(), AuctionModule, OrderModule],
+  providers: [AuctionLifecycleJob, AuctionPriceDropJob, OrderExpiryJob],
 })
 export class JobsModule {}
