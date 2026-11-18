@@ -10,43 +10,23 @@ import {
 } from "typeorm";
 
 interface CustomFindManyOptions extends FindManyOptions {
-  /**
-   * Specifies what columns should be retrieved.
-   */
   select?: any;
-  /**
-   * Indicates what relations of entity should be loaded (simplified left join form).
-   */
   relations?: {
     [index: string]: any;
   };
 }
 
 interface CustomFindOneOptions extends FindOneOptions {
-  /**
-   * Specifies what columns should be retrieved.
-   */
   select?: any;
-  /**
-   * Indicates what relations of entity should be loaded (simplified left join form).
-   */
   relations?: {
     [index: string]: any;
   };
 }
 
-/**
- * Parse processable operation for TypeOrm from string
- * @date 2022-06-28
- * @param {any} operation:string
- * @param {any} value:string
- * @returns {FindOperator<any> | string | number}
- */
 function operationParser(
   operation: string,
   value: string,
 ): FindOperator<any> | string | number {
-  //TODO:Implement strategies to parse operation
   if (operation == "ltei") {
     return LessThanOrEqual(parseInt(value));
   } else if (operation == "lte") {
@@ -57,24 +37,16 @@ function operationParser(
   return value;
 }
 
-/**
- * Takes query as parameters and returns undefined|FindManyOptions based on the query string
- * @param {QueryString} query
- * @param {string[]} search_fields - Array of fields to search
- * @returns {FindManyOptions | undefined}
- */
 const makeFindOption = function (
   query: any,
   search_fields: string[],
 ): FindManyOptions | undefined {
   if (!query) return undefined;
-  //since we will be using filters as a dynamic array so treat as a reserved word
   if (query.filters)
     throw { message: "Invalid Query String. filters is a reserved word" };
   const findOption: CustomFindManyOptions = {};
   let { q, attributes, include, limit, offset, sortBy, ...filters } = query;
 
-  //if columns to select are specified then return them only
   if (attributes) {
     try {
       attributes = JSON.parse(attributes.toString()) as string;
@@ -87,7 +59,6 @@ const makeFindOption = function (
     selects = attributes;
     selects.map((element: string) => {
       findOption.select = findOption.select ?? {};
-      //TODO:logic to perform any raw query if specified on the query string with the column name
 
       const [levelOne, levelTwo, levelThree] = element.toString().split(".");
       findOption.select[levelOne] = findOption.select[levelOne] ?? true;
@@ -107,7 +78,6 @@ const makeFindOption = function (
       }
     });
   }
-  //sort the result set by a column
   if (sortBy) {
     findOption.order = {};
     try {
@@ -125,7 +95,6 @@ const makeFindOption = function (
       } as any;
     });
   }
-  //number of rows to skip from beginning
   if (offset) {
     try {
       offset = JSON.parse(offset.toString()) as string;
@@ -137,7 +106,6 @@ const makeFindOption = function (
       findOption.skip = parseInt(skip as string);
     }
   }
-  //number of rows to return
   if (limit) {
     try {
       limit = JSON.parse(limit.toString()) as string;
@@ -149,7 +117,6 @@ const makeFindOption = function (
       findOption.take = parseInt(take as string);
     }
   }
-  //if any search string provided then generate OR query query using the provided search fields
   if (q) {
     const whereClauses: any[] = [];
     try {
@@ -220,7 +187,6 @@ const makeFindOption = function (
       });
     }
   }
-  //parse relationships
   if (include) {
     try {
       include = JSON.parse(include.toString());
@@ -231,7 +197,6 @@ const makeFindOption = function (
       include = include?.toString().split(",");
     if (!Array.isArray(include) && typeof include === "object") return;
     relations = include;
-    //iterate all relationships and generate (both single and multilevel) relationship entry
     relations.forEach((element: string) => {
       if (!findOption.relations) findOption.relations = {};
       const [firstLevel, secondLevel] = element.split(".");
@@ -249,17 +214,11 @@ const makeFindOption = function (
   return findOption;
 };
 
-/**
- * Takes query as parameters and returns undefined|FindOneOptions based on the query string
- * @param {QueryString} query
- * @returns {FindOneOptions | undefined}
- */
 const makeFindOneOption = function (query: any): FindOneOptions | undefined {
   if (!query) return undefined;
   const findOption: CustomFindOneOptions = {};
   let { attributes, include } = query;
 
-  //if columns to select are specified then return them only
   if (attributes) {
     try {
       attributes = JSON.parse(attributes.toString()) as string;
@@ -272,7 +231,6 @@ const makeFindOneOption = function (query: any): FindOneOptions | undefined {
     selects = attributes;
     selects.map((element: string) => {
       findOption.select = findOption.select ?? {};
-      //TODO:logic to perform any raw query if specified on the query string with the column name
 
       const [levelOne, levelTwo, levelThree] = element.toString().split(".");
       findOption.select[levelOne] = findOption.select[levelOne] ?? true;
@@ -292,7 +250,6 @@ const makeFindOneOption = function (query: any): FindOneOptions | undefined {
       }
     });
   }
-  //parse relationships
   if (include) {
     try {
       include = JSON.parse(include.toString());
@@ -303,7 +260,6 @@ const makeFindOneOption = function (query: any): FindOneOptions | undefined {
       include = include?.toString().split(",");
     if (!Array.isArray(include) && typeof include === "object") return;
     relations = include;
-    //iterate all relationships and generate (both single and multilevel) relationship entry
     relations.forEach((element: string) => {
       if (!findOption.relations) findOption.relations = {};
       const [firstLevel, secondLevel] = element.split(".");

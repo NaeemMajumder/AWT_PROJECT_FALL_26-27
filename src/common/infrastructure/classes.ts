@@ -1,9 +1,5 @@
-//#region Types
-
 export type DictionaryKey = string | number;
 export type Comparer<T> = (x: T, y: T) => boolean;
-
-//#endregion
 
 export class Dictionary<K extends DictionaryKey, V> {
   private record: Record<K, V> | undefined;

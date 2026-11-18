@@ -21,7 +21,6 @@ export function throwAxiosHttpException(
     );
   }
 
-  // Fallback: unknown error → generic 500
   throw new HttpException(
     {
       statusCode: 500,
