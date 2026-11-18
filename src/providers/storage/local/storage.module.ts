@@ -1,9 +1,8 @@
-/**
- * ==================================================================
- *  TEAM A  (Naeem Majumder)
- * ==================================================================
- *  StorageModule: local file storage provider
- *
- *  - exports StorageService (used by Team B for pet photos - HANDSHAKE 7)
- * ==================================================================
- */
+import { Module } from "@nestjs/common";
+import { StorageService } from "./storage.service";
+
+@Module({
+  providers: [StorageService],
+  exports: [StorageService],
+})
+export class StorageModule {}
