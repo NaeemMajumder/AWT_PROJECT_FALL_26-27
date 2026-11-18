@@ -1,10 +1,7 @@
-import {
-  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
-} from "typeorm";
-import { User } from "../../user/entities/user.entity";
-import { Pet } from "../../pet/entities/pet.entity";
-import { AuctionStatus } from "../../../common/enums/auction.enum";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { User } from "@/modules/user/entities/user.entity";
+import { Pet } from "@/modules/pet/entities/pet.entity";
+import { AuctionStatus } from "@/common/enums/auction.enum";
 
 @Entity({ name: "auctions" })
 export class Auction {
@@ -31,38 +28,38 @@ export class Auction {
   @Column({ type: "int", default: 1 })
   round_no!: number;
 
-  @Column({ type: "int" })
+  @Column({ type: "numeric", precision: 6, scale: 2 })
   duration_hours!: number;
 
   @Column({ type: "timestamp", nullable: true })
-  start_time?: Date;
+  start_time?: Date | null;
 
   @Column({ type: "timestamp", nullable: true })
-  end_time?: Date;
+  end_time?: Date | null;
 
   @Column({ type: "int", default: 0 })
   extension_count!: number;
 
   @Column({ type: "numeric", precision: 12, scale: 2, nullable: true })
-  highest_bid?: number;
+  highest_bid?: number | null;
 
   @Column({ type: "uuid", nullable: true })
-  highest_bidder_id?: string;
+  highest_bidder_id?: string | null;
 
-  @Column({ type: "enum", enum: AuctionStatus, enumName: "auction_status_enum", default: AuctionStatus.REQUESTED })
+  @Column({ type: "enum", enum: AuctionStatus, default: AuctionStatus.REQUESTED })
   status!: AuctionStatus;
 
   @Column({ type: "numeric", precision: 12, scale: 2, nullable: true })
-  offer_price?: number;
+  offer_price?: number | null;
 
   @Column({ type: "timestamp", nullable: true })
-  offer_expires_at?: Date;
+  offer_expires_at?: Date | null;
 
   @Column({ type: "uuid", nullable: true })
-  winner_id?: string;
+  winner_id?: string | null;
 
   @Column({ type: "uuid", nullable: true })
-  approved_by?: string;
+  approved_by?: string | null;
 
   @CreateDateColumn({ type: "timestamp" })
   created_at!: Date;
