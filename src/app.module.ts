@@ -40,7 +40,6 @@ PetRequestModule,
 AuctionModule,
 ConsultationModule,
 JobsModule
-
   ],
   controllers: [AppController],
   providers: [AppService],
